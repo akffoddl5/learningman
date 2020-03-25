@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="FaqBoardDAO">
+
+	<select id="getBoard" parameterType="faqBoard" resultType="faqBoard">
+	SELECT * FROM faqboard WHERE num = #{num}
+	</select>
+	
+<select id="getBoardSize" parameterType="int" resultType="int">
+	<![CDATA[
+	select count(*) from faqboard
+	]]>
+	</select>
+	
+	
+	<select id="getBoardList" parameterType="faqBoard" resultType="faqBoard">
+	<![CDATA[
+	select * from (
+SELECT rowNum as rNum, num, title, writer, content , regDate, cnt from (
+SELECT * FROM faqboard order by num desc 
+)
+) where rNum >= ${begin} and rNum <= ${end}
+	]]>
+	
+	</select>
+
+</mapper>

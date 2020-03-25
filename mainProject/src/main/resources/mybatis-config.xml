@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.six.web.user.UserVO" alias="myuser"></typeAlias>
+		<typeAlias type="com.six.web.admin.TermsVO" alias="terms"></typeAlias>
+		<typeAlias type="com.six.web.admin.ImgVO" alias="img"></typeAlias>
+		<typeAlias type="com.six.web.askBoard.AskBoardVO" alias="askBoard"></typeAlias>
+		<typeAlias type="com.six.web.faqBoard.FaqBoardVO" alias="faqBoard"></typeAlias>
+		<typeAlias type="com.six.web.lesson.LectureVO" alias="lectureVO"></typeAlias>
+		<typeAlias type="com.six.web.lesson.LessonVO" alias="lessonVO"></typeAlias>
+		<typeAlias type="com.six.web.noticeBoard.NoticeBoardVO" alias="noticeBoard"></typeAlias>
+		<typeAlias type="com.six.web.lesson.CategoryVO" alias="categoryVO"></typeAlias>
+		<typeAlias type="com.six.web.reply.LessonReplyVO" alias="lessonReplyVO"></typeAlias>
+		<typeAlias type="com.six.web.reply.LectureReplyVO" alias="lectureReplyVO"></typeAlias>
+		<typeAlias type="com.six.web.admin.AdminVO" alias="myadmin"></typeAlias>
+		<typeAlias type="com.six.web.answerBoard.AnswerBoardVO" alias="answerBoard"></typeAlias>
+		<typeAlias type="com.six.web.pay.PayListVO" alias="payListVO"></typeAlias>
+		<typeAlias type="com.six.web.pay.TradeListVO" alias="tradeListVO"></typeAlias>
+		<typeAlias type="com.six.web.websocket.ChatDTO" alias="chatDTO"></typeAlias>
+      <typeAlias type="com.six.web.lesson.SearchListVO" alias="searchListVO"></typeAlias>
+      <typeAlias type="com.six.web.notification.NotificationVO" alias="notificationVO"></typeAlias>
+      <typeAlias type="com.six.web.lesson.MyLectureListVO" alias="myLectureListVO"></typeAlias>
+      <typeAlias type="com.six.web.admin.LessonChartVO" alias="lessonChartVO"></typeAlias>
+		<typeAlias type="com.six.web.admin.CategoryChartVO" alias="categoryChartVO"></typeAlias>
+		<typeAlias type="com.six.web.admin.RecoChartVO" alias="recoChartVO"></typeAlias>
+		<typeAlias type="com.six.web.admin.QnaChartVO" alias="qnaChartVO"></typeAlias>
+		<typeAlias type="com.six.web.admin.CategorySalesVO" alias="CategorySalesVO"></typeAlias>
+		<typeAlias type="com.six.web.admin.DateCountVO" alias="datecountVO"></typeAlias>
+	</typeAliases>
+	
+	
+	<mappers>
+		<mapper resource="mappings/admin-mapping.xml"/>
+		<mapper resource="mappings/user-mapping.xml" />
+		<mapper resource="mappings/askBoard-mapping.xml"/>
+		<mapper resource="mappings/faqBoard-mapping.xml"/>
+		<mapper resource="mappings/lesson-mapping.xml"/>
+		<mapper resource="mappings/noticeBoard-mapping.xml"/>
+		<mapper resource="mappings/reply-mapping.xml"/>
+		<mapper resource="mappings/answerBoard-mapping.xml"/>
+		<mapper resource="mappings/pay-mapping.xml"/>
+		<mapper resource="mappings/chat-mapping.xml"/>
+		<mapper resource="mappings/notification-mapping.xml"/>
+	</mappers>
+</configuration>

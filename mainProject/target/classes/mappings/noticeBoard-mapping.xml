@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="NoticeBoardDAO">
+
+	<select id="getBoard" parameterType="noticeBoard" resultType="noticeBoard">
+	SELECT * FROM noticeboard WHERE num = #{num}
+	</select>
+	
+	<select id="getBoardSize" parameterType="int" resultType="int">
+	<![CDATA[
+	select count(*) from noticeboard
+	]]>
+	</select>
+	
+	
+	<select id="getBoardList" parameterType="noticeBoard" resultType="noticeBoard">
+	<![CDATA[
+	select * from (
+SELECT rowNum as rNum, num, title, writer, content , cnt ,regDate from (
+SELECT * FROM noticeboard order by num desc
+)
+) where rNum >= ${begin} and rNum <= ${end}
+	]]>
+	
+	</select>
+	
+	<select id="insertBoard" parameterType="noticeBoard" resultType="noticeBoard">
+	INSERT INTO noticeboard(num,title,writer,content) VALUES(noticeboard_seq.nextVal, #{title}, #{writer} , #{content} ) 
+	</select>
+	
+	
+	
+
+</mapper>

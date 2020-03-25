@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AnswerBoardDAO">
+
+	<select id="getBoard" parameterType="askBoard" resultType="askBoard">
+	SELECT * FROM askboard WHERE num = #{num}
+	</select>
+	
+	<select id="getBoard2" parameterType="answerBoard" resultType="answerBoard">
+	SELECT * FROM answerboard WHERE title=#{title} and content=#{content}
+	</select>
+	
+	<select id="getBoardSize" parameterType="int" resultType="int">
+	<![CDATA[
+	select count(*) from askboard
+	]]>
+	</select>
+	
+	
+	<select id="getAdminQnaBoardList" parameterType="askBoard" resultType="askBoard">
+	<![CDATA[
+	
+	select * from (
+SELECT rowNum as rNum, num, type, title, writer, content , regDate, cnt, secret, ref from (
+SELECT * FROM askboard order by ref desc ,num asc
+)
+) where rNum >= ${begin} and rNum <= ${end}
+	]]>
+	
+	</select>
+	
+	<select id="insertAnswerQna" parameterType="answerBoard" resultType="answerBoard">
+	INSERT INTO answerboard (num, title, content, id, ref) VALUES (answerboard_seq.nextval, #{title}, #{content} , #{id}, #{ref}) 
+	</select>
+	
+	
+	
+
+</mapper>

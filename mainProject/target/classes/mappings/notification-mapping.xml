@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="NotificationDAO">
+
+	<select id="insertNotificationConfirm" parameterType="notificationVO" resultType="notificationVO">
+		INSERT INTO notification (num, id, content) VALUES(notification_seq.nextVal, #{id}, #{content})
+	</select>
+
+	<select id="getNotificationList" parameterType="notificationVO" resultType="notificationVO">
+		select * from notification where id = #{id} and confirm = 'N' 
+	</select>
+	<select id="updateNotificationConfirm" parameterType="notificationVO" resultType="notificationVO">
+		update notification set confirm = 'Y' where num = #{num}
+	</select>
+	
+	<delete id="delAllNoti">
+	delete from notification where id = #{id}
+	</delete>
+</mapper>

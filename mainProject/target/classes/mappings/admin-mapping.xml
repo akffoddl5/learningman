@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AdminDAO">
+
+	<select id="getAdmin" parameterType="myadmin" resultType="myadmin">
+		SELECT * FROM lnAdmin WHERE id = #{id}
+	</select>
+
+	<select id="insertAdmin" parameterType="myadmin" resultType="myadmin">
+		INSERT INTO lnAdmin (id, password, email, phone) VALUES( #{id}, #{password}, #{email}, #{phone} )
+	</select>
+
+	<select id="getAdminMemberList" parameterType="myadmin" resultType="myadmin">
+		SELECT * FROM lnadmin
+	</select>
+
+	<select id="getUserMemberList" parameterType="myuser" resultType="myuser">
+		SELECT * FROM lnuser where authorized != '-1'
+	</select>
+
+	<update id="userMemberDelete">
+		update lnuser set authorized='-1' where 
+		<foreach collection="deleteUserMemberList" index="index" item="item" separator="or">
+			 id = #{item} 
+		</foreach>
+	</update>
+
+	<select id="getAdminFaqBoardList" parameterType="faqBoard" resultType="faqBoard">
+		SELECT * FROM faqboard order by num desc
+	</select>
+	
+	<update id="updateFaqBoard" parameterType="faqBoard">
+		update faqboard set title = #{title} , content = #{content} where num = #{num}
+	</update>
+	
+	<select id="insertFaqWrite" parameterType="faqBoard" resultType="faqBoard">
+		INSERT INTO faqboard (num, title, writer, content) VALUES(faqboard_seq.nextval , #{title}, #{writer}, #{content})
+	</select>
+	
+	<update id="deleteFaqBoard">
+		DELETE FROM faqBoard where 
+		<foreach collection="deleteFaqList" index="index" item="item" separator="or">
+			 num = #{item}
+		</foreach>
+	</update>
+	
+	<update id="updateNoticeBoard" parameterType="noticeBoard">
+		update noticeboard set title = #{title} , content = #{content} where num = #{num}
+	</update>
+
+	<select id="getAdminNoticeBoardList" parameterType="noticeBoard" resultType="noticeBoard">
+		SELECT * FROM noticeboard
+	</select>
+	
+	<update id="deleteNoticeBoard">
+		DELETE FROM noticeBoard where 
+		<foreach collection="deleteList" index="index" item="item" separator="or">
+			 num = #{item} 
+		</foreach>
+	</update>
+	
+	<select id="insertNoticeBoard" parameterType="noticeBoard" resultType="noticeBoard">
+		INSERT INTO noticeboard (num, title, writer, content) VALUES  
+		 (noticeboard_seq.nextval, #{title}, #{writer} , #{content} )
+	</select>
+	
+	<select id="getAdminQnaBoardList" parameterType="askBoard" resultType="askBoard">
+		select rowNum as rNum, num, type, title, writer, content , 
+		 regDate, cnt, secret, ref from ( 
+		 select * from ( select * from askboard 
+		 union 
+		 select num,null,title,id,content,regdate,null,null,ref from 
+		 answerboard 
+		 ) order by ref desc, type asc 
+		 )
+	</select>
+
+	<update id="deleteQnaBoard">
+		DELETE FROM askBoard where 
+		<foreach collection="deleteQnaList" index="index" item="item" separator="or"> 
+		num = #{item} 
+		</foreach>
+	</update>
+
+	<update id="deleteQnaAnswerBoard">
+		DELETE FROM answerBoard where num = #{num}
+	</update>
+
+	<update id="insertTerms" parameterType="terms">
+		INSERT INTO terms (termsnum, termsname, termscontent) VALUES(terms_seq.nextval , #{termsname}, #{termscontent})
+	</update>
+
+	<select id="getTermsList" parameterType="terms" resultType="terms">
+		SELECT * FROM terms order by termsnum desc
+	</select>
+
+	<select id="getTermsContent" parameterType="terms" resultType="terms">
+		select * from terms where termsnum = #{termsnum}
+	</select>
+
+	<update id="modifyTerms" parameterType="terms">
+		update terms set termsname= #{termsname}, termscontent=#{termscontent} where termsnum=#{termsnum}
+	</update>
+
+	<update id="termsDelete">
+		delete terms where 
+		<foreach collection="deleteTermsList" index="index" item="item" separator="or">
+			 termsnum = #{item} 
+		</foreach>
+	</update>
+
+	<update id="updateLectureList">
+	UPDATE  lecture set del=  'Y'   where  
+		<foreach collection="updateLectureList" index="index" item="item" separator="or">
+		 	 num = #{item} 
+		</foreach>
+	</update>
+	
+	<select id="getAdminLectureList" parameterType="lectureVO" resultType="LectureVO">
+		select * from lecture where del='N' order by num desc
+	</select>
+
+	<update id="updateVideoBoard">
+		UPDATE lesson set del='Y' where 
+		<foreach collection="updateVideoList" index="index" item="item" separator="or">
+			 num = #{item} 
+		</foreach>
+	</update>
+
+	<select id="getAdminLessonList" parameterType="lessonVO" resultType="lessonVO">
+		 SELECT * FROM lesson where del = 'N' order by num desc 
+	</select>
+
+	<update id="noticeAlarm">
+	insert into notification (num,id,content,url ) values (notification_seq.nextval ,#{id}
+	,#{content} , #{url} )
+	</update>
+	
+	<update id="answerAlarm">
+	insert into notification (num,id,content,url ) values (notification_seq.nextval ,#{id}
+	,#{content} , #{url} )
+	</update>
+	
+	<update id="lessonAlarm">
+	insert into notification (num,id,content,url ) values (notification_seq.nextval ,#{id}
+	,#{content} , #{url} )
+	</update>
+	
+	<select id="whoPickThisLecture" parameterType="myuser" resultType="myuser">
+	select * from lnuser where id in (
+select id from picklist where lecturenum = #{lectureNum}
+)
+	</select>
+
+
+<!-- 형꺼 admin 합친거 -->
+
+	<update id="insertCategory">
+		insert into category (name, constructor) values (#{name} , #{constructor})
+	</update>
+
+	<select id="getCategoryName" parameterType="categoryVO" resultType="categoryVO">
+		select * from category where name = #{name}
+	</select>
+
+	<update id="deleteCategory">
+		update category set del='Y' where name=#{name}
+	</update>
+	
+	<insert id="insertImage" parameterType="img" >
+	insert INTO userpageimg VALUES ('1', #{imgmain}, #{imgnew}, #{imgteacher})
+	</insert>
+	
+	<update id="updateMainImage">
+		update userpageimg set imgmain=#{imgmain}
+	</update>
+	
+	<update id="updateNewImage">
+		update userpageimg set imgnew=#{imgnew}
+	</update>
+	
+	<update id="updateTeacherImage">
+		update userpageimg set imgteacher=#{imgteacher}
+	</update>
+
+	<select id="getAllPayList" parameterType="payListVO" resultType="payListVO">
+	 select * from payList
+	</select>
+	
+	<select id="getTerms" parameterType="terms" resultType="terms">
+	select* from terms
+	</select> 
+	
+	<select id="getImgVO" parameterType="img" resultType="img" >
+	select * from USERPAGEIMG where num = 1 
+	</select>
+	
+	<!--  adminmerging... -->
+	<select id="getMemberCount" resultType="String">
+		select count(*) from lnuser where not authorized='-1'
+	</select>
+	<select id="getMemberTeacherCount" resultType="String">
+		select count(*) from lnuser where teacher='Y' and authorized != '-1'
+	</select>
+	<select id="getMemberSiteCount" resultType="String">
+		select COUNT(*) from lnuser where not name='kakao' and not name='naver' and authorized != '-1'
+	</select>
+	<select id="getMemberKakaoCount" resultType="String">
+		select COUNT(*) from lnuser where name='kakao' and authorized != '-1'
+	</select>
+	<select id="getMemberNaverCount" resultType="String">
+		select COUNT(*) from lnuser where name='naver' and authorized != '-1'
+	</select>
+
+	<select id="getDateCount" parameterType="String" resultType="String">
+		select count(*) from lnuser where not name='kakao' and not name='naver' and TO_CHAR(regdate,'yyyymmdd')=#{date} and authorized != '-1'
+	</select>
+	<select id="getKakaoDateCount" parameterType="String" resultType="String">
+		select count(*) from lnuser where name='kakao'and TO_CHAR(regdate,'yyyymmdd')=#{date} and authorized != '-1'
+	</select>
+	<select id="getNaverDateCount" parameterType="String" resultType="String">
+		select count(*) from lnuser where name='naver'and TO_CHAR(regdate,'yyyymmdd')=#{date} and authorized != '-1'
+	</select>
+	
+	<select id="getAllCategoryName" parameterType="categoryVO" resultType="categoryVO">
+		select * from category where del='N'
+	</select>
+	
+	<select id="getTotalPay" parameterType="int" resultType="int">
+		select sum(price) from paylist
+	</select>
+	<select id="getTotalUsePoint" parameterType="int" resultType="int">
+		select sum(price) from tradelist
+	</select>
+	
+	<select id="getPayCount" parameterType="String" resultType="String">
+		select count(*) from paylist where TO_CHAR(regdate, 'yyyymmdd')=#{date}
+	</select>
+	<select id="getDateSales" parameterType="String" resultType="String">
+		select sum(price) from paylist where TO_CHAR(regdate, 'yyyymmdd')=#{date}
+	</select>
+	
+	<select id="getPayMemberCount" parameterType="String" resultType="String">
+		select count(*)  from (select id, count(*) from paylist group by id)
+	</select>
+	
+	<select id="getAllPayCount" parameterType="String" resultType="String">
+		select count(*) from paylist
+	</select>
+
+	<select id="getSumCategory" parameterType="String" resultType="String">
+		select sum(sum) as sum from (select count(*) as count , sum(price) as sum from (select * from tradelist where lectureNum in (select num from lecture where category = #{name})) group by lectureNum)
+	</select>
+	
+	
+	<select id="getPriceCountByDate" parameterType="lessonChartVO"  resultType="lessonChartVO">
+	<![CDATA[
+	select lectureNum , count(*) as count, sum(price) as sum from(
+    select * from tradelist where regdate between to_date(#{start},'YYYYMMDD') and  to_date(#{end},'YYYYMMDD') + 1   
+    ) group by lectureNum
+	]]>
+	</select>
+	<select id="getPriceCountByDate2" parameterType="lectureVO"  resultType="lectureVO">
+	<![CDATA[
+	 select * from lecture where num in (
+     select lectureNum from(
+    select * from tradelist where regdate between to_date(#{start},'YYYYMMDD') and  to_date(#{end},'YYYYMMDD') + 1   
+    ) group by lectureNum
+  )
+	]]>
+	</select>
+	
+	<select id="getPriceCountByCategory" parameterType="categoryChartVO"  resultType="categoryChartVO"> <!--  여기 잘못 -->
+	<![CDATA[
+	select sum(count) as count , sum(sum) as sum from (
+	 select count(*) as count , sum(price) as sum from (
+select * from tradelist where lectureNum in (
+select num from lecture where category = #{categoryName}
+) and regdate between to_date(#{start},'YYYYMMDD') and  to_date(#{end},'YYYYMMDD') + 1  
+) group by lectureNum
+)
+	]]>
+	</select>
+	
+	<select id="getLectureNum" parameterType="int" resultType="int">
+	select count(*) from lecture
+	</select>
+	<select id="getFreeLectureNum" parameterType="int" resultType="int">
+	select count(*) from lecture where price = 0
+	</select>
+	
+	<select id="getLectureListByCategory" parameterType="recoChartVO" resultType="recoChartVO">
+	select name as lectureName,likecnt,num from lecture where category = #{category} and del = 'N'
+	</select>
+	<select id="getLessonReplyCntByLecture" parameterType="int" resultType="int">
+	select count(*) as lessonReplyCnt from lessonReply where lessonnum in (select num from lesson where lecturenum = #{lectureNum}  )
+	</select>
+	<select id="getLectureReplyCntByLecture" parameterType="int" resultType="int">
+	select count(*) as lectureReplyCnt from lectureReply where lecturenum = #{lectureNum}
+	</select>
+	
+	<select id="getAskBoardNum" parameterType="int" resultType="int">
+   <![CDATA[
+   select count(*) from askboard
+   ]]>
+   </select>
+   
+   <select id="getAnswerBoardNum" parameterType="int" resultType="int">
+   <![CDATA[
+   select count(*) from askboard where ref in (select ref from answerboard)
+   ]]>
+   </select>
+   
+   <select id="getQueCount" parameterType="qnaChartVO" resultType="qnaChartVO">
+   select type, count(*) as quecount from askboard group by type
+   </select>
+   
+   <select id="getAnswerCount" parameterType="qnaChartVO" resultType="qnaChartVO">
+   select type, count(*) as quecount from(select type from askboard  where ref in (select ref from answerboard)) group by type
+   </select>
+	
+
+</mapper>

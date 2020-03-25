@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="UserDAO">
+
+	<select id="getUser" parameterType="myuser" resultType="myuser">
+	SELECT * FROM lnUser WHERE id = #{id}
+	</select>
+	
+	<select id="insertUser" parameterType="myuser" resultType="myuser">
+	INSERT INTO lnUser (id,password,name,email,phone,teacher,authorized) VALUES( #{id}, #{password}, #{name} ,#{email}, #{phone} , #{teacher}, #{authorized} ) 
+	</select>
+	
+	<update id="updateUserForAutho" parameterType="myuser">
+	UPDATE lnUser set authorized = 'Y' where id = #{id}
+	</update>
+	
+	<select id="findUser" parameterType="myuser" resultType="myuser">
+   SELECT * FROM lnUser WHERE name = #{name} and email = #{email}
+   </select>
+   
+   <update id="updateUserForImsiPass" parameterType="myuser">
+   UPDATE lnUser set password = #{password} where id = #{id}
+   </update>
+	
+	<update id="updateUser" parameterType="myuser">
+   UPDATE lnUser set name = #{name}, email = #{email}, phone = #{phone} , thumbnail = #{thumbnail} where id = #{id}
+   </update>
+   
+   <update id="beTeacher">
+   update lnuser set teacher='Y' where id = #{id}
+   </update>
+   
+   <update id="updatePoint">
+   update lnuser set point = #{point} where id = #{id}
+   </update>
+
+</mapper>

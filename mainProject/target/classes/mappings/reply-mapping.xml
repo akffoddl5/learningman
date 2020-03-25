@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ReplyDAO">
+
+	
+<select id="getLessonReplyList" parameterType="lessonReplyVO" resultType="lessonReplyVO">
+	select* from lessonReply where lessonNum = #{lessonNum} order by ref desc , num asc
+</select>
+	
+	<select id="getLectureReplyList" parameterType="lectureReplyVO" resultType="lectureReplyVO">
+	select* from lectureReply where lectureNum = #{lectureNum} order by ref desc , num asc
+	</select>
+	
+	<insert id="insertLessonReply" parameterType="lessonReplyVO">
+	insert into lessonReply(num,id,content,lessonNum,ref,thumbnail) values(lessonReply_seq.nextVal,#{id}, #{content}, #{lessonNum}, lessonReply_seq.nextVal, #{thumbnail})
+	</insert>
+	
+	<insert id="insertLessonReReply" parameterType="lessonReplyVO">
+	insert into lessonReply(num,id,content,lessonNum,ref,thumbnail) values(lessonReply_seq.nextVal,#{id}, #{content}, #{lessonNum}, #{ref},#{thumbnail})
+	</insert>
+	
+	<insert id="insertLectureReply" parameterType="lectureReplyVO">
+	insert into lectureReply(num,id,content,lectureNum,ref,thumbnail) values(lectureReply_seq.nextVal,#{id}, #{content}, #{lectureNum}, lectureReply_seq.nextVal,#{thumbnail})
+	</insert>
+	
+	<insert id="insertLectureReReply" parameterType="lectureReplyVO">
+	insert into lectureReply(num,id,content,lectureNum,ref,thumbnail) values(lectureReply_seq.nextVal,#{id}, #{content}, #{lectureNum}, #{ref},#{thumbnail})
+	</insert>
+	
+</mapper>

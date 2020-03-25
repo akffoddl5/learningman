@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AskBoardDAO">
+
+	<select id="getBoard" parameterType="askBoard" resultType="askBoard">
+	SELECT * FROM askboard WHERE num = #{num}
+	</select>
+	
+	<select id="getAnswerBoard" parameterType="askBoard" resultType="askBoard">
+	SELECT * FROM answerboard WHERE num = #{num}
+	</select>
+	
+	<select id="getBoardSize" parameterType="int" resultType="int">
+	<![CDATA[
+	select count(*) from(
+select * from askboard
+union
+select num,null,title,id,content,regdate,null,null,ref from answerboard
+)
+	]]>
+	</select>
+	
+	
+	<select id="getBoardList" parameterType="askBoard" resultType="askBoard">
+	
+	<![CDATA[
+	select * from (
+select rowNum as rNum2, rNum, num, type, title, writer, content , regDate, cnt, secret, ref from  (
+select * from(
+select  rowNum as rNum , num, type, title,writer,content,regDate,cnt,secret,ref from (select * from askboard order by num desc)
+union
+select null, num, null, title,id ,content, regdate, null , null, ref from answerboard
+) order by ref desc, type asc
+)
+)where rNum2 >= ${begin} and rNum2 <= ${end}
+	
+	]]>
+	
+	
+	
+	</select>
+	
+	<select id="insertBoard" parameterType="askBoard" resultType="askBoard">
+	INSERT INTO askboard(num, type,title,writer,content,secret,ref) VALUES(askboard_seq.nextVal, #{type}, #{title}, #{writer} , #{content} , #{secret}, askboard_seq.nextVal ) 
+	</select>
+	
+	
+	
+
+</mapper>

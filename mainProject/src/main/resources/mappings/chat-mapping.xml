@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ChatDAO">
+
+
+   <insert id="insertChat" parameterType="chatDTO">
+   insert into chatList (num,userId,adminId,content) values (chatList_seq.nextVal,#{userId},#{adminId},#{content})
+   </insert>  <!-- userId 랑 adminId 에  'dont_delete_this_account_never' 가 있는지 확인하시오  없으면 에러임-->
+   
+   
+   <select id="getChatList" parameterType="chatDTO" resultType="chatDTO">
+   select * from chatlist WHERE TO_CHAR(regdate,'YYYYMMDD') = TO_CHAR(SYSDATE,'YYYYMMDD') order by regdate asc
+   </select>
+   
+   
+</mapper>

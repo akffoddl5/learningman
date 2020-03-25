@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="LessonDAO">
+	
+	<select id="getMyLectureList" parameterType="lectureVO" resultType="lectureVO">
+	select* from lecture where category in (select name from category where del = 'N') and id = #{id} and del = 'N'
+	</select>
+	
+	<select id="getLecture" parameterType="lectureVO" resultType="lectureVO">
+	SELECT * FROM lecture WHERE num = #{lectureNum}
+	</select>
+	
+	<select id="getLesson" parameterType="lessonVO" resultType="lessonVO">
+	SELECT * FROM lesson WHERE num = #{lessonNum}
+	</select>
+	
+	<select id="getLessonList" parameterType="lessonVO" resultType="lessonVO">
+	SELECT * FROM lesson WHERE lectureNum = #{num} order by num asc
+	</select>
+	
+	<select id="getMyPickList" parameterType="lectureVO" resultType="lectureVO">
+	select* from lecture where num in (
+	select lecturenum from picklist where id = #{id} ) and category in (select name from category where del = 'N')
+	
+	</select>
+	
+	<select id="getMyLikeList" parameterType="lectureVO" resultType="lectureVO">
+	select* from lecture where num in (
+	select lecturenum from likelist where id = #{id} ) and category in (select name from category where del = 'N')
+	</select>
+	
+	<select id="getCategoryList" parameterType="categoryVO" resultType="categoryVO">
+	select* from category where del = 'N'
+	</select>
+	
+	<select id="getCategoryLectureList" parameterType="lectureVO" resultType="lectureVO">
+	select rowNum as rNum ,num,name,category,id,likecnt,pickcnt,thumnailPath,price,content1,content2,content3,content4,cnt,regDate from (
+	select* from lecture where  del='N' and (
+	
+	<foreach collection="categoryList" index="index" item="item" separator="or">
+	 category = #{item.name} 
+	</foreach>
+	)
+	 order by cnt desc  )
+	<!-- 
+	select rowNum as rNum ,num,name,category,id,likecnt,thumnailPath,price,content1,content2,content3,content4,cnt,regDate from (
+	select* from lecture where category = #{category} order by cnt desc )
+	 -->
+	 
+	</select>
+	
+	<insert id="insertLesson" parameterType="lessonVO" >
+	<![CDATA[
+	INSERT INTO lesson(num,title,content,videopath,thumbnailPath,hashtag,category,lecturenum,id) 
+	VALUES(lesson_seq.nextVal,#{title},#{content} ,#{videoPath},#{thumbnailPath},#{hashTag},#{category},#{lectureNum},#{id} ) 
+	]]>
+	</insert>
+	
+	<insert id="insertLecture" parameterType="lectureVO" >
+	<![CDATA[
+	INSERT INTO lecture(num,name,category,id,thumnailPath,content1,content2,content3,content4,price) 
+	VALUES(lecture_seq.nextVal,#{name},#{category} ,#{id},#{thumnailPath},#{content1},#{content2},#{content3},#{content4},#{price} ) 
+	]]>
+	</insert>
+	
+	<delete id="deletePick">
+	delete from picklist where id = #{id} and lecturenum = #{num}
+	</delete>
+	
+	<insert id="insertPick">
+	insert into picklist values(picklist_seq.nextVal,#{id}, #{num} )
+	</insert>
+	
+	<insert id="insertLike">
+	insert into likelist values(likelist_seq.nextVal,#{id}, #{num} )
+	</insert>
+	
+	<delete id="deleteLike">
+	delete from likelist where id = #{id} and lecturenum = #{num}
+	</delete>
+	
+	<update id="lectureUpcount">
+	update lecture set cnt = cnt+1 where num = #{num}
+	</update>
+	
+	<select id="searchKey" parameterType="lectureVO" resultType="lectureVO">
+   <![CDATA[
+   select* from lecture where (name like '%'||#{keyword}||'%' or category like '%'||#{keyword}||'%' or content1 like '%'||#{keyword}||'%' 
+   or content2 like '%'||#{keyword}||'%' or content3 like '%'||#{keyword}||'%' or content4 like '%'||#{keyword}||'%') and del = 'N'
+   ]]>
+   </select>
+   
+   <select id="getSearchRank" parameterType="searchListVO" resultType="searchListVO" >
+   <![CDATA[
+   select * from (
+   select rownum as rnum , keyword,cnt from (
+   select* from searchRank order by cnt desc
+   )
+   ) where rnum <=5
+   ]]>
+   </select>
+   
+   <select id="getSearchHistory" parameterType="searchListVO" resultType="searchListVO">
+   <![CDATA[
+   select * from(
+   select rownum as rnum, num, id , keyword, lecturenum ,regdate from (
+   select * from searchList where id = #{id} order by num desc
+   )
+   ) where rnum <= 5
+   ]]>
+   </select>
+   
+   <insert id="insertSearchHistory" >
+   insert into searchList (num,id,keyword,lectureNum) values (searchList_seq.nextVal,#{id},#{keyword},#{lectureNum})
+   </insert>
+   
+   <insert id="insertSearchRank">
+   insert into searchRank (keyword) values( #{keyword} )
+   </insert>
+   
+   <select id="getSearchRankOne" parameterType="searchListVO" resultType="searchListVO">
+   select * from searchRank where keyword = #{keyword}
+   </select>
+   
+   <update id="searchUpCount">
+   update searchRank set cnt = cnt+1 where keyword = #{keyword}
+   </update>
+   
+   <delete id="deleteHistory">
+   delete from searchList where id = #{id}
+   </delete>
+   
+   <update id="updateLikeCnt">
+   <![CDATA[
+   update lecture set likecnt = 
+   (select count(*) as getLikeCnt from likelist where lecturenum = lecture.num)
+   ]]>
+   </update>
+   
+   <update id="updatePickCnt">
+   <![CDATA[
+   update lecture set pickcnt = 
+   (select count(*) as getPickCnt from picklist where lecturenum = lecture.num)
+   ]]>
+   </update>
+	
+	<select id="getMyHistoryLectureList" parameterType="myLectureListVO" resultType="myLectureListVO">
+   select * from myLectureList where id = #{id}
+   </select>
+   
+   <insert id="insertMyLectureList">
+   insert into myLectureList (num,id,lectureNum) values(myLectureList_seq.nextVal , #{id} ,#{lectureNum} )
+   </insert>
+   
+   	<select id="getSimilarLectureList" parameterType="lectureVO" resultType="lectureVO">
+	select * from lecture where category = #{name} and del = 'N'
+	</select>
+</mapper>
+

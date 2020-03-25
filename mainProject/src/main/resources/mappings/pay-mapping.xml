@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PayListDAO">
+	
+	<select id="insertPayList" parameterType="payListVO" resultType="payListVO">
+	INSERT INTO payList (num, id, price, type) VALUES( payList_seq.nextVal, #{id}, #{price}, #{type} ) 
+	</select>
+	
+	<select id="getMyPayList" parameterType="payListVO" resultType="payListVO">
+	 select * from payList where id= #{id}
+	</select>
+	
+	<select id="insertTradeList" parameterType="tradeListVO" resultType="tradeListVO">
+	insert into tradelist (num, buyer, price, seller, lectureNum) values(tradeList_seq.nextVal, #{buyer}, #{price}, #{seller}, #{lectureNum}) 
+	</select>
+	
+	<select id="getMemberTradeList" parameterType="tradeListVO" resultType="tradeListVO">
+	select * from tradeList
+	</select>
+	
+	<select id="lectureBuyConfirm" parameterType="tradeListVO" resultType="tradeListVO">
+	 select * from tradelist where buyer = #{id2} and lecturenum = #{lectureNum}
+	</select>
+	
+	<update id="userBuyLecture">
+	<![CDATA[
+	update lnuser set point = point - #{price} where id = #{id}
+	]]>
+	</update>
+	
+	<update id="userSellLecture">
+	<![CDATA[
+	update lnuser set point = point + #{price} where id = #{id}
+	]]>
+	</update>
+</mapper>
+
